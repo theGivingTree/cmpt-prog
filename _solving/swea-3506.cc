@@ -57,7 +57,6 @@ struct Rt {
 		auto B = A->left;
 		*root->right = *B;
 		root->count = root->count - A->count;
-		if(B->height != 0) root->count += B->root->count;
 		B->root = root;
 		root = A;
 		root->left->getBal();
@@ -69,7 +68,6 @@ struct Rt {
 		auto B = A->right;
 		*root->left = *B;
 		A->count = A->count + root->count;
-		if(B->height != 0) A->count -= B->root->count;
 		B->root = root;
 		root = A;
 		root->right->getBal();
