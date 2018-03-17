@@ -45,27 +45,21 @@ struct AVLTree {
 	}
 
 	void lrotate() {
-		Node *A, *B, *C; // old-root, new-root, inner-child
-		A = root;
-		B = A->right->root;
-		C = B->left->root;
+		auto A = root->right->root; // new-root
+		*root->right = *A->left;
+		A->left->root = root;
 
-		A->right->root = C;
-		B->left->root = A;
-		root = B;
+		root = A;
 		root->left->getBalance(true);
 		getBalance(true);
 	}
 
 	void rrotate() {
-		Node *A, *B, *C; // old-root, new-root, inner-child
-		A = root;
-		B = A->left->root;
-		C = B->right->root;
+		auto A = root->left->root; // new-root
+		*root->left = *A->right;
+		A->right->root = root;
 
-		A->left->root = C;
-		B->right->root = A;
-		root = B;
+		root = A;
 		root->right->getBalance(true);
 		getBalance(true);
 	}
