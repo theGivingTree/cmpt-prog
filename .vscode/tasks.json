@@ -18,6 +18,16 @@
       }
     },
     {
+      "label": "run",
+      "type": "shell",
+      "windows": {
+        "command": "_binary/run.exe"
+      },
+      "osx": {
+        "command": ""
+      }
+    },
+    {
       "label": "run(input)",
       "type": "shell",
       "windows": {
