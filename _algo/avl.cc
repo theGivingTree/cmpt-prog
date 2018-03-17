@@ -25,22 +25,16 @@ struct AVLTree {
 		}
 		else { /* TODO: duplicate key handling */ }
 
-		printf("inserted %d: \n", key);
 		int balance = getBalance(true);
 		rebalance(balance);
-		printf("tree: ");
-		display();
-		putchar('\n');
 	}
 	
 	void rebalance(int balance) {
 		if(balance < -1) {
 			if(root->left->getBalance() > 0) {
 				root->left->lrotate();
-				puts("lrotated");
 			}
 			rrotate();
-				puts("rrotated");
 		}
 		else if(balance > 1) {
 			if(root->right->getBalance() < 0) {
@@ -81,7 +75,6 @@ struct AVLTree {
 		lh = root->left->height;
 		rh = root->right->height;
 		if(heightUpdate) {
-			printf("%d l,r height: %d %d\n", root->key, lh, rh);
 			height = 1 + (lh > rh ? lh : rh);
 		}
 		return rh - lh;
@@ -108,7 +101,6 @@ struct AVLTree {
 int main() {
 	auto avlTree = new AVLTree();
 	for(int k; scanf("%d", &k) == 1;) {
-		printf("inserting %d\n", k);
 		avlTree->insert(k, 0);
 	}
 	avlTree->display();
