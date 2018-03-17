@@ -54,8 +54,11 @@ struct Rt {
 
 	void lrot() {
 		auto A = root->right->root;
-		*root->right = *A->left;
-		A->left->root = root;
+		auto B = A->left;
+		*root->right = *B;
+		root->count = root->count - A->count;
+		if(B->height != 0) root->count += B->root->count;
+		B->root = root;
 		root = A;
 		root->left->getBal();
 		getBal();
@@ -63,8 +66,11 @@ struct Rt {
 
 	void rrot() {
 		auto A = root->left->root;
-		*root->left = *A->right;
-		A->right->root = root;
+		auto B = A->right;
+		*root->left = *B;
+		A->count = A->count + root->count;
+		if(B->height != 0) A->count -= B->root->count;
+		B->root = root;
 		root = A;
 		root->right->getBal();
 		getBal();
