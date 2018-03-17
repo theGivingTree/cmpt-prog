@@ -1,96 +1,105 @@
 #include <cstdio>
-#include <vector>
-#include <tuple>
-#include <utility>
 using namespace std;
 using LL = long long;
 
-vector<LL> S;
-vector<LL> mergeBuf;
-int N, P;
+struct Rt {
+	struct Nd {
+		LL key, count;
+		Rt *left, *right;
+	};
+	Nd *root = nullptr;
+	int height = 0;
 
-/* Find lower-bound L where S*[L] + det >= 0 */
-int bs(int lo, int up, LL det) {
-	while(up-lo>0) {
-		int m = (lo+up-1)/2;
-		if(S[m] + det < 0) lo = m+1;
-		else up = m;
-	}
-	return lo;
-}
-
-tuple<LL, LL> dnq(int lo, int up) {
-	LL count = 0, sum = 0;
-	if(up - lo < 4) {
-		for(int i=lo; i<up; ++i) {
-			LL s = 0LL;
-			for(int j=i; j<up; ++j) {
-				s += S[j];
-				count += (s - P*(j-i+1)) >= 0;
-			}
-
-			sum += S[i];
-			S[i] = sum - P*(i-lo+1);
-			for(int j=i; j>lo; --j) {
-				if(S[j-1] > S[j]) {
-					swap(S[j-1], S[j]);
-				}
-			}
+	void insert(LL key) {
+		if(root == nullptr) {
+			root = new Nd {key, 1, new Rt(), new Rt()};
+			height = 1;
+			return;
 		}
-		/* S[lo, up) -> S*[lo, up): no original array S */
-		/* S*[lo, up) consists of each determinant of S[lo, I) where I∈[lo, up)*/
-		return make_tuple(count, sum);
+
+		if(key < root->key) { root->left->insert(key); }
+		else if(key > root->key) { ++root->count; root->right->insert(key); }
+		else { ++root->count; return; }
+
+		rebal(getBal());
 	}
 
-	LL lCount, rCount, lSum, rSum;
-	int m = (up+lo)/2;
-	tie(lCount, lSum) = dnq(lo, m);
-	tie(rCount, rSum) = dnq(m, up);
-	sum = lSum + rSum;
-
-	/* Rearrange left half */
-	LL detL = lSum - P*(m-lo);
-	for(int i=lo; i<m-1; ++i) {
-		int t = S[lo];
-		S[lo] = detL - S[m-2-(i-lo)];
-		S[m-2-(i-lo)] = detL - t;
+	LL find(int key) {
+		if(root == nullptr) return 0;
+		if(key < root->key) {
+			LL ret = root->left->find(key);
+			if(ret == 0) ret = root->count;
+			return ret;
+		}
+		if(key > root->key) return root->right->find(key);
+		else return root->count;
 	}
 
-	/* Count Phase */
-	for(int i=lo, nm=m; i<m && nm<up; ++i) {
-		int lowB = bs(nm, up, S[i]);
-		count += up - lowB;
-		nm = lowB;
+	int getBal() {
+		int lh = root->left->height, rh = root->right->height;
+		height = 1+(lh>rh?lh:rh);
+		return rh-lh;
 	}
 
-	/* Merge Phase */
-	if(up-lo != N) {
-		int i=lo, j=m, k=0;
-		while(i<m && j<up) mergeBuf[k++] = S[i] < detL + S[j] ? S[i++] : detL + S[j++];
-		while(i<m) mergeBuf[k++] = S[i++];
-		while(j<up) mergeBuf[k++] = detL + S[j++];
-
-		for(int i=lo; i<up; ++i) {
-			S[i] = mergeBuf[i-lo];
+	void rebal(int bal) {
+		if(bal < -1) {
+			if(root->left->getBal() > 0) lrot();
+			rrot();
+		}
+		else if(bal > 1) {
+			if(root->right->getBal() < 0) rrot();
+			lrot();
 		}
 	}
 
-	return make_tuple(lCount + count + rCount, sum);
+	void lrot() {
+		auto A = root->right->root;
+		*root->right = *A->left;
+		A->left->root = root;
+		root = A;
+		root->left->getBal();
+		getBal();
+	}
+
+	void rrot() {
+		auto A = root->left->root;
+		*root->left = *A->right;
+		A->right->root = root;
+		root = A;
+		root->right->getBal();
+		getBal();
+	}
+
+	~Rt() {
+		if(root != nullptr) {
+			delete root->left;
+			delete root->right;
+			delete root;
+		}
+	}
+};
+
+LL solve() {
+	int N, P;
+	scanf("%d %d", &N, &P);
+	LL offset = 0, answ = 0;
+	Rt tree;
+	for(int i=0; i<N; ++i) {
+		int s;
+		scanf("%d", &s);
+		s -= P;
+		tree.insert(-offset);
+		offset += s;
+		answ += tree.find(-offset);
+	}
+	return answ;
 }
 
 int main() {
 	int T;
 	scanf("%d", &T);
 	for(int t=1; t<=T; ++t) {
-		scanf("%d %d", &N, &P);
-		S.resize(N);
-		mergeBuf.resize((N+1)/2);
-		for(int i=0; i<N; ++i) {
-			scanf("%lld", &S[i]);
-		}
-		LL answ;
-		answ = get<0>(dnq(0, N));
-		printf("#%d %lld\n", t, answ);
+		printf("#%d %lld\n", t, solve());
 	}
 	return 0;
 }
