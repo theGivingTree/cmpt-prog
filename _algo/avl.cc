@@ -2,114 +2,114 @@
 using namespace std;
 
 struct AVLTree {
-  struct Node {
-    int key;
-    AVLTree *left, *right;
-  };
+	struct Node {
+		int key;
+		AVLTree *left, *right;
+	};
 
-  Node *root = nullptr;
-  int height = 0;
+	Node *root = nullptr;
+	int height = 0;
 
-  void insert(int key, int level = 1) {
-    if(root == nullptr) {
-      root = new Node {key, new AVLTree(), new AVLTree() };
-      height = 1;
-      return;
-    }
+	void insert(int key, int level = 1) {
+		if(root == nullptr) {
+			root = new Node {key, new AVLTree(), new AVLTree() };
+			height = 1;
+			return;
+		}
 
-    if(key < root->key) {
-      root->left->insert(key);
-    }
-    else if(key > root->key) {
-      root->right->insert(key);
-    }
-    else { /* TODO: duplicate key handling */ }
+		if(key < root->key) {
+			root->left->insert(key);
+		}
+		else if(key > root->key) {
+			root->right->insert(key);
+		}
+		else { /* TODO: duplicate key handling */ }
 
-    printf("inserted %d: \n", key);
-    int balance = getBalance(true);
-    rebalance(balance);
-    printf("tree: ");
-    display();
-    putchar('\n');
-  }
-  
-  void rebalance(int balance) {
-    if(balance < -1) {
-      if(root->left->getBalance() > 0) {
-        root->left->lrotate();
-        puts("lrotated");
-      }
-      rrotate();
-        puts("rrotated");
-    }
-    else if(balance > 1) {
-      if(root->right->getBalance() < 0) {
-        root->right->rrotate();
-      }
-      lrotate();
-    }
-  }
+		printf("inserted %d: \n", key);
+		int balance = getBalance(true);
+		rebalance(balance);
+		printf("tree: ");
+		display();
+		putchar('\n');
+	}
+	
+	void rebalance(int balance) {
+		if(balance < -1) {
+			if(root->left->getBalance() > 0) {
+				root->left->lrotate();
+				puts("lrotated");
+			}
+			rrotate();
+				puts("rrotated");
+		}
+		else if(balance > 1) {
+			if(root->right->getBalance() < 0) {
+				root->right->rrotate();
+			}
+			lrotate();
+		}
+	}
 
-  void lrotate() {
-    Node *A, *B, *C; // old-root, new-root, inner-child
-    A = root;
-    B = A->right->root;
-    C = B->left->root;
+	void lrotate() {
+		Node *A, *B, *C; // old-root, new-root, inner-child
+		A = root;
+		B = A->right->root;
+		C = B->left->root;
 
-    A->right->root = C;
-    B->left->root = A;
-    root = B;
-    root->left->getBalance(true);
-    getBalance(true);
-  }
+		A->right->root = C;
+		B->left->root = A;
+		root = B;
+		root->left->getBalance(true);
+		getBalance(true);
+	}
 
-  void rrotate() {
-    Node *A, *B, *C; // old-root, new-root, inner-child
-    A = root;
-    B = A->left->root;
-    C = B->right->root;
+	void rrotate() {
+		Node *A, *B, *C; // old-root, new-root, inner-child
+		A = root;
+		B = A->left->root;
+		C = B->right->root;
 
-    A->left->root = C;
-    B->right->root = A;
-    root = B;
-    root->right->getBalance(true);
-    getBalance(true);
-  }
+		A->left->root = C;
+		B->right->root = A;
+		root = B;
+		root->right->getBalance(true);
+		getBalance(true);
+	}
 
-  int getBalance(bool heightUpdate = false) {
-    int lh, rh;
-    lh = root->left->height;
-    rh = root->right->height;
-    if(heightUpdate) {
-      printf("%d l,r height: %d %d\n", root->key, lh, rh);
-      height = 1 + (lh > rh ? lh : rh);
-    }
-    return rh - lh;
-  }
+	int getBalance(bool heightUpdate = false) {
+		int lh, rh;
+		lh = root->left->height;
+		rh = root->right->height;
+		if(heightUpdate) {
+			printf("%d l,r height: %d %d\n", root->key, lh, rh);
+			height = 1 + (lh > rh ? lh : rh);
+		}
+		return rh - lh;
+	}
 
-  void display() {
-    if(root == nullptr) return;
-    putchar('(');
-    root->left->display();
-    printf("%d", root->key);
-    root->right->display();
-    putchar(')');
-  }
+	void display() {
+		if(root == nullptr) return;
+		putchar('(');
+		root->left->display();
+		printf("%d", root->key);
+		root->right->display();
+		putchar(')');
+	}
 
-  ~AVLTree() {
-    if(root != nullptr) {
-      delete root->left;
-      delete root->right;
-      delete root;
-    }
-  }
+	~AVLTree() {
+		if(root != nullptr) {
+			delete root->left;
+			delete root->right;
+			delete root;
+		}
+	}
 };
 
 int main() {
-  auto avlTree = new AVLTree();
-  for(int k; scanf("%d", &k) == 1;) {
-    printf("inserting %d\n", k);
-    avlTree->insert(k, 0);
-  }
-  avlTree->display();
+	auto avlTree = new AVLTree();
+	for(int k; scanf("%d", &k) == 1;) {
+		printf("inserting %d\n", k);
+		avlTree->insert(k, 0);
+	}
+	avlTree->display();
 }

@@ -4,3 +4,6 @@
 
 *.o
 *.dSYM/
+_binary/
+.which
+.problem-config
