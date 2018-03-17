@@ -17,22 +17,22 @@ struct Rt {
 			return;
 		}
 
-		if(key < root->key) { root->left->insert(key); }
-		else if(key > root->key) { ++root->count; root->right->insert(key); }
+		if(key > root->key) { ++root->count; root->right->insert(key); }
+		else if(key < root->key) { root->left->insert(key); }
 		else { ++root->count; return; }
 
 		rebal(getBal());
 	}
 
 	LL find(int key) {
-		if(root == nullptr) return 0;
-		if(key < root->key) {
-			LL ret = root->left->find(key);
-			if(ret == 0) ret = root->count;
-			return ret;
+		LL ret;
+		if(root == nullptr) ret = 0;
+		else if(key > root->key) ret = root->right->find(key);
+		else {
+			ret = root->count;
+			if(key < root->key) ret += root->left->find(key);
 		}
-		if(key > root->key) return root->right->find(key);
-		else return root->count;
+		return ret;
 	}
 
 	int getBal() {
