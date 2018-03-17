@@ -43,11 +43,11 @@ struct Rt {
 
 	void rebal(int bal) {
 		if(bal < -1) {
-			if(root->left->getBal() > 0) lrot();
+			if(root->left->getBal() > 0) root->left->lrot();
 			rrot();
 		}
 		else if(bal > 1) {
-			if(root->right->getBal() < 0) rrot();
+			if(root->right->getBal() < 0) root->right->rrot();
 			lrot();
 		}
 	}
