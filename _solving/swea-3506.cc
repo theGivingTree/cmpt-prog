@@ -2,17 +2,24 @@
 using namespace std;
 using LL = long long;
 
+struct Nd;
+struct Rt;
+Rt *_rtget();
+Nd *_ndget();
+
+struct Nd {
+	LL key, count;
+	Rt *left, *right;
+};
+
 struct Rt {
-	struct Nd {
-		LL key, count;
-		Rt *left, *right;
-	};
-	Nd *root = nullptr;
-	int height = 0;
+	Nd *root;
+	int height;
 
 	void insert(LL key) {
 		if(root == nullptr) {
-			root = new Nd {key, 1, new Rt(), new Rt()};
+			root = _ndget();
+			*root = Nd{key, 1, _rtget(), _rtget()};
 			height = 1;
 			return;
 		}
@@ -73,21 +80,20 @@ struct Rt {
 		root->right->getBal();
 		getBal();
 	}
-
-	~Rt() {
-		if(root != nullptr) {
-			delete root->left;
-			delete root->right;
-			delete root;
-		}
-	}
 };
+
+int _Irt, _Ind;
+Rt *_rta;
+Nd *_nda;
+Rt *_rtget() { _rta[_Irt] = Rt{nullptr, 0}; return &_rta[_Irt++]; }
+Nd *_ndget() { return &_nda[_Ind++]; }
 
 LL solve() {
 	int N, P;
+	_Irt = _Ind = 0;
 	scanf("%d %d", &N, &P);
 	LL offset = 0, answ = 0;
-	Rt tree;
+	Rt tree{nullptr, 0};
 	for(int i=0; i<N; ++i) {
 		int s;
 		scanf("%d", &s);
@@ -100,10 +106,14 @@ LL solve() {
 }
 
 int main() {
+	_rta = new Rt[1000001];
+	_nda = new Nd[1000000];
 	int T;
 	scanf("%d", &T);
 	for(int t=1; t<=T; ++t) {
 		printf("#%d %lld\n", t, solve());
 	}
+	delete[] _rta;
+	delete[] _nda;
 	return 0;
 }
