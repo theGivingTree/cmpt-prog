@@ -24,7 +24,7 @@ struct Rt {
 		rebal(getBal());
 	}
 
-	LL find(int key) {
+	LL find(LL key) {
 		LL ret;
 		if(root == nullptr) ret = 0;
 		else if(key > root->key) ret = root->right->find(key);
