@@ -106,8 +106,8 @@ LL solve() {
 }
 
 int main() {
-	_rta = new Rt[1000001];
-	_nda = new Nd[1000000];
+	_rta = new Rt[3000000];
+	_nda = new Nd[2000000];
 	int T;
 	scanf("%d", &T);
 	for(int t=1; t<=T; ++t) {
