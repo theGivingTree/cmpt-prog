@@ -1,0 +1,51 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "compile",
+      "type": "shell",
+      "windows": {
+        "command": "./compile.bat"
+      },
+      "osx": {
+        "command": ""
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "run",
+      "type": "shell",
+      "windows": {
+        "command": "_binary/run.exe"
+      },
+      "osx": {
+        "command": ""
+      }
+    },
+    {
+      "label": "run(input)",
+      "type": "shell",
+      "windows": {
+        "command": "gc (gc .problem-config)[1] | _binary/run.exe"
+      },
+      "osx": {
+        "command": ""
+      }
+    },
+    {
+      "label": "clean",
+      "type": "shell",
+      "windows": {
+        "command": "Remove-Item _binary -Recurse -Force -ErrorAction Ignore"
+      },
+      "osx": {
+        "command": ""
+      }
+    }
+  ]
+}
