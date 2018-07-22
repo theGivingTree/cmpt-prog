@@ -31,8 +31,8 @@ int main() {
     cin >> N >> M;
     genInput();
     for(i=0; i<N-1; ++i) {
-      downbound[i] = 1000000;
-      upbound[i] = 1000000;
+      downbound[i] = 2000000;
+      upbound[i] = 2000000;
     }
     for(i=0; i<M; ++i) {
       int a, b, u, d;
