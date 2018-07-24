@@ -1,39 +1,34 @@
 #include <cstdio>
 #include <cstring>
+#include <algorithm>
 using namespace std;
-char sa[1001], sb[1001];
-int la, lb, ll;
-int d[1001][1001], t[1001];
+char sa[1001], sb[1001], lcs[1001];
+int alen, blen, d[2][1001];
+bool kk[1000][1000];
 int main() {
-  int i, j, n;
+  int i, j;
   scanf("%s %s", sa, sb);
-  ll=la=strlen(sa);
-  lb=strlen(sb);
-  if(ll<lb) ll=lb;
-  for(n=1; n<=ll; ++n) {
-    i=n;
-    for(j=1; j<=ll; ++j) {
-      int a=d[i][j-1], b=d[i-1][j], c;
-      d[i][j]=a>b?a:(t[i]=t[i-1],b);
-      c = sa[i-1]==sb[j-1]?d[i-1][j-1]+1:0;
-      if(d[i][j]<c) {
-        t[i]=i;
-        d[i][j]=c;
+  alen = strlen(sa);
+  blen = strlen(sb);
+  for(i=0; i<alen; ++i) {
+    for(j=0; j<blen; ++j) {
+      int r = d[i&1][j+1];
+      if(r < d[~i&1][j]) {
+        kk[i][j] = true;
+        r=d[~i&1][j];
       }
+      if(sa[i] == sb[j]) r = max(r, d[i&1][j]+1);
+      d[~i&1][j+1] = r;
     }
   }
-  for(i=1; i<=la; ++i) {
-    printf("--> %d, %d\n", i, t[i]);
+  int ans = d[alen&1][blen];
+  printf("%d\n", ans);
+  i=alen-1, j=blen-1;
+  while(ans) {
+    if(sa[i] == sb[j]) lcs[--ans] = sa[i], --i, --j;
+    else if(kk[i][j]) --j;
+    else --i;
   }
-  int Q=d[ll][ll];
-  printf("%d\n", Q);
-  sb[Q]=0;
-  i=la;
-  while(t[i]) {
-    sb[--Q]=sa[t[i]-1];
-    printf("->%d, %d\n", t[i], Q);
-    i=t[i]-1;
-  }
-  puts(sb);
+  puts(lcs);
   return 0;
 }

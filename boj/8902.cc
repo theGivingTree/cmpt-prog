@@ -33,7 +33,7 @@ int main() {
     for(j=1; j<=len2; ++j) D[0][j] = D[0][j-1] + calcDelta(0, j, row2[j-1]);
 
     for(i=1; i<=len1; ++i) {
-      D[i&1][0] = calcDelta(i, 0, row1[i-1]);
+      D[i&1][0] = D[~i&1][0] + calcDelta(i, 0, row1[i-1]);
       for(j=1; j<=len2; ++j) {
         int d1 = calcDelta(i, j, row1[i-1]);
         int d2 = calcDelta(i, j, row2[j-1]);
