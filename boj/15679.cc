@@ -8,14 +8,12 @@ bool solve() {
     X=Y=0, Z=0x7fffffff;
     return true;
   }
-  if(N>60) {
-    if(C==1) {
-      X=Y=Z=0;
-      return true;
-    }
-    else return false;
+  if(C==1) {
+    X=Y=Z=0;
+    return true;
   }
-  // N<=60, C>=1
+  if(N>60) return false;
+  // N<=60, C>1
   LL T1=(1<<(N-1))-1, T2=(1<<(N-1))-2, T3=1<<(N-1);
   int c1=0, c2=0, c3=0;
   if(N%2) {
@@ -31,7 +29,7 @@ bool solve() {
     if(C>1) return false;
     X=(1<<(c2+c3))-1;
     Y=0;
-    Z=((1<<c3)-1)<<c2;
+    Z=(1<<c3)-1;
     return true;
   }
 }
