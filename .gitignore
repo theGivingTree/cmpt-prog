@@ -8,3 +8,4 @@
 _binary/
 .which
 .problem-config
+.DS_Store
