@@ -3,8 +3,8 @@
 using namespace std;
 using LL = long long;
 int sy, a, b, n;
-int L[200001], R[200001];
-int psum[200002];
+int L[200000], R[200000];
+int psum[200001];
 
 int findleft(int x, int y) {
   int ret = -1;
@@ -14,8 +14,8 @@ int findleft(int x, int y) {
     mi = (lo+hi)/2;
 
     LL mR;
-    mR = 1LL*ydel*(R[mi]-x) + xy;
-    if(y*a < mR) {
+    mR = ydel*(R[mi]-x) + xy;
+    if(1LL*y*a < mR) {
       hi = mi-1;
       ret = mi;
     }
@@ -32,8 +32,8 @@ int findright(int x, int y) {
     mi = (lo+hi)/2;
 
     LL mL;
-    mL = 1LL*ydel*(L[mi]-x) + xy;
-    if(mL < y*b) {
+    mL = ydel*(L[mi]-x) + xy;
+    if(mL < 1LL*y*b) {
       lo = mi+1;
       ret = mi;
     }
@@ -60,6 +60,7 @@ int main() {
 
     LL ans = 0, iiL, jjR;
     LL ydel = y-sy, xy = 1LL*x*y;
+    LL A = 1LL*y*a, B = 1LL*y*b;
 
     ii = findleft(x, y);
     if(ii == -1) {
@@ -73,11 +74,11 @@ int main() {
     }
 
     iiL = ydel*(L[ii]-x) + xy;
-    if(y*a < iiL) iiL = y*a;
+    if(A < iiL) iiL = A;
     jjR = ydel*(R[jj]-x) + xy;
-    if(jjR < y*b) jjR = y*b;
+    if(jjR < B) jjR = B;
     ans = ydel*(psum[jj+1] - psum[ii]);
-    ans -= (y*a - iiL) + (jjR - y*b);
+    ans -= (A - iiL) + (jjR - B);
     printf("%.6lf\n", 1.0*ans/y);
   }
   return 0;

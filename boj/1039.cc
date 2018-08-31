@@ -1,15 +1,23 @@
 #include <cstdio>
+#include <vector>
 #include <algorithm>
 using namespace std;
 char s[8];
-int len, K;
-int main() {
+// int len, K;
+int amain(int N, int K) {
+  int len;
   int i, j;
-  scanf("%s %d", s, &K);
+  sprintf(s, "%d", N);
+  // scanf("%s %d", s, &K);
+  bool ff[7] = {};
+  int ffi[7] = {};
+  vector<int> ffv[7];
+
   for(len=0; s[len]; ++len);
   if(len==1 || len==2 && s[1]=='0') {
-    puts("-1");
-    return 0;
+    // puts("-1");
+    // return 0;
+    return -1;
   }
   for(i=0; i<len-1 && K; ++i) {
     int II = i;
@@ -38,6 +46,7 @@ int main() {
           s[j] = sII;
         }
       }
+      K - swps;
 
       int ii, jj;
       for(ii=swps; ii-->1;) for(jj=0; jj<ii; ++jj) if(tmp[jj]<tmp[jj+1]) swap(tmp[jj], tmp[jj+1]);
@@ -60,6 +69,16 @@ int main() {
       char t=s[len-1];s[len-1]=s[len-2];s[len-2]=t;
     }
   }
-  puts(s);
+  // puts(s);
+  // return 0;
+  int res;
+  sscanf(s, "%d", &res);
+  return res;
+}
+
+int sdfamain() {
+  int n, k;
+  scanf("%d %d", &n, &k);
+  printf("%d", amain(n, k));
   return 0;
 }
