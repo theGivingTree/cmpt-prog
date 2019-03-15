@@ -6,3 +6,6 @@
 
 * `win-env.bat`
 `vcvarsall.bat` 의 절대경로를 `VCVARSALL` 에 저장
+
+# sh + gcc
+* `. sh_env.sh`
