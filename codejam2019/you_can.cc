@@ -4,7 +4,7 @@ int TC, tc;
 int main() {
   scanf("%d", &TC);
   for(tc=1; tc<=TC; ++tc) {
-    char aa[50001], bb[50001];
+    char aa[99999], bb[99999];
     scanf("%*d %s", aa);
     int i;
     for(i=0; aa[i]; ++i) {
