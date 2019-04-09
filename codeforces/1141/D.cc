@@ -37,6 +37,7 @@ int main() {
   if(lmo < rrem) {
     ans += lmo;
     sofar_ql = lmo;
+    lmo = 0;
   }
   else {
     ans += rrem;
@@ -47,6 +48,7 @@ int main() {
   if(rmo < lrem) {
     ans += rmo;
     sofar_qr = rmo;
+    rmo = 0;
   }
   else {
     ans += lrem;
