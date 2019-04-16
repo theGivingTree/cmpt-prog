@@ -3,7 +3,7 @@
 using namespace std;
 int TC;
 int N, ans;
-bool dead[1000];
+int grid[2001][2001];
 int x[1000], y[1000], d[1000], K[1000];
 int xL, xR, yL, yR;
 int dx[]={1, 0, -1, 0}, dy[]={0, 1, 0, -1};
@@ -16,51 +16,69 @@ int main() {
   for(int tc=1; tc<=TC; ++tc) {
     ans = 0;
     scanf("%d", &N);
+    for(int i=0; i<=2000; ++i) {
+      for(int j=0; j<=2000; ++j) {
+        grid[i][j] = -1;
+      }
+    }
     xL=9999, xR=0, yL=9999, yR=0;
     for(int i=0; i<N; ++i) {
-      dead[i] = false;
       scanf("%d %d %d %d", &x[i], &y[i], &d[i], &K[i]);
+      x[i] += 1000;
+      y[i] += 1000;
+      grid[x[i]][y[i]] = i;
       d[i] = ddremap[d[i]];
       if(xL > x[i]) xL = x[i];
       if(xR < x[i]) xR = x[i];
       if(yL > y[i]) yL = y[i];
       if(yR < y[i]) yR = y[i];
     }
-    int Tl = xR-xL > yR-yL ? xR-xL : yR-yL;
-    for(int tl=0; tl<Tl; ++tl) {
-      int coables[1000], n_c = 0;
+
+    int remain = N;
+    for(int tl=1; remain; ++tl) {
       for(int i=0; i<N; ++i) {
-        if(dead[i]) continue;
-        int xc=x[i], yc=y[i], dc=d[i];
-        int nx=xc+dx[dc], ny=yc+dy[dc];
-        if(!bchk(nx, ny)) {
-          dead[i] = true;
-          continue;
+        int xi=x[i], yi=y[i], di=d[i], Ki=K[i];
+        if(grid[xi][yi] == -1) continue;
+        if(tl&1) {
+          int t, xt, yt;
+          xt = xi+tl*dx[di], yt = yi+tl*dy[di];
+          if(!bchk(xt, yt) || (t=grid[xt][yt]) == -1 || (d[t]+2)%4 != di) continue;
+          ans += Ki + K[t];
+          grid[xi][yi] = grid[xt][yt] = -1;
+          remain -= 2;
         }
-        x[i]=nx, y[i]=ny;
-        coables[n_c++] = i;
-      }
-      sort(coables, coables+n_c, [](int a, int b) {
-        return x[a] < x[b] || (x[a] == x[b] && y[a] < y[b]);
-      });
-      int i=0;
-      while(i<n_c) {
-        int ti = coables[i];
-        int nx=x[ti], ny=y[ti];
-        int sum = K[ti];
-        int old_i = i++;
-        while(i<n_c && (nx == x[coables[i]] && ny == y[coables[i]])) {
-          sum += K[coables[i]];
-          ++i;
-        }
-        if(i - old_i > 1) {
-          ans += sum;
-          for(int j=old_i; j<i; ++j) {
-            dead[coables[j]] = true;
+        else {
+          int ll = tl/2;
+          int xm = xi + ll*dx[di], ym = yi + ll*dy[di];
+          if(!bchk(xm, ym)) {
+            grid[xi][yi] = -1;
+            --remain;
+            continue;
           }
+
+          int cnt = 0;
+          for(int s=0; s<4; ++s) {
+            int t, xt, yt;
+            xt = xm + ll*dx[s], yt = ym + ll*dy[s];
+            if(!bchk(xt, yt) || (t=grid[xt][yt]) == -1 || (d[t]+2)%4 != s) continue;
+            ++cnt;
+          }
+          if(cnt == 1) continue;
+
+          int sum = 0;
+          for(int s=0; s<4; ++s) {
+            int t, xt, yt;
+            xt = xm + ll*dx[s], yt = ym + ll*dy[s];
+            if(!bchk(xt, yt) || (t=grid[xt][yt]) == -1 || (d[t]+2)%4 != s) continue;
+            sum += K[t];
+            grid[xt][yt] = -1;
+          }
+          ans += sum;
+          remain -= cnt;
         }
       }
     }
+
     printf("#%d %d\n", tc, ans);
   }
   return 0;
