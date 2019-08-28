@@ -1,84 +1,62 @@
 #include <cstdio>
-#include <vector>
-#include <algorithm>
+#include <cstring>
+#include <cstdlib>
 using namespace std;
-char s[8];
-// int len, K;
-int amain(int N, int K) {
-  int len;
-  int i, j;
-  sprintf(s, "%d", N);
-  // scanf("%s %d", s, &K);
-  bool ff[7] = {};
-  int ffi[7] = {};
-  vector<int> ffv[7];
+char ns[8];
+int K;
+bool dup;
+int ns_l, w[7];
+int go(int s, int kz) {
+  if(kz == 0) return strtol(ns+s, NULL, 10);
 
-  for(len=0; s[len]; ++len);
-  if(len==1 || len==2 && s[1]=='0') {
-    // puts("-1");
-    // return 0;
-    return -1;
+  int v, i, p = 0;
+  while(ns_l - s > 2) {
+    v = s;
+    for(i=s+1; i<ns_l; ++i) {
+      if(ns[v] < ns[i]) v = i;
+    }
+    p += (ns[v]-'0')*w[s];
+    if(v != s) break;
+    ++s;
   }
-  for(i=0; i<len-1 && K; ++i) {
-    int II = i;
-    int cnt = 0;
-    for(j=i+1; j<len; ++j) {
-      if(s[II] == s[j]) ++cnt;
-      else if(s[II] < s[j]) {
-        cnt = 0;
-        II = j;
-      }
-    }
-    if(II == i) continue;
 
-    if(cnt == 0) {
-      --K;
-      char t=s[II];s[II]=s[i];s[i]=t;
-    }
-    else {
-      ++cnt;
-      char sII = s[II];
-      int swps = 0;
-      char tmp[4];
-      for(j=i; j<i+cnt && swps < K; ++j) {
-        if(sII != s[j]) {
-          tmp[swps++] = s[j];
-          s[j] = sII;
-        }
-      }
-      K - swps;
+  if(ns_l - s == 2) {
+    int a = (ns[s]-'0')*10 + (ns[s+1]-'0'), b = (ns[s+1]-'0')*10 + (ns[s]-'0');
+    if(dup) return p+(a<b?b:a);
+    else return p+(kz%2?b:a);
+  }
 
-      int ii, jj;
-      for(ii=swps; ii-->1;) for(jj=0; jj<ii; ++jj) if(tmp[jj]<tmp[jj+1]) swap(tmp[jj], tmp[jj+1]);
-
-      K -= swps;
-      for(j=len-1; swps>0; --j) {
-        if(sII == s[j]) s[j] = tmp[--swps];
-      }
-      j=i+1;
-      while(s[j] == sII) ++j;
-      i = j-1;
+  int xm = 0;
+  for(i=v; i<ns_l; ++i) {
+    if(ns[v] == ns[i]) {
+      char t=ns[i];ns[i]=ns[s];ns[s]=t;
+      int x = go(s+1, kz-1);
+      if(xm < x) xm = x;
+      t=ns[i];ns[i]=ns[s];ns[s]=t;
     }
   }
-  if(K%2 == 1) {
-    bool flag = false;
-    for(i=0; i<len; ++i) for(j=i+1; j<len; ++j) {
-      if(s[i] == s[j]) flag = true;
-    }
-    if(!flag) {
-      char t=s[len-1];s[len-1]=s[len-2];s[len-2]=t;
-    }
-  }
-  // puts(s);
-  // return 0;
-  int res;
-  sscanf(s, "%d", &res);
-  return res;
+
+  return p + xm;
 }
+int main() {
+  int i, j;
+  scanf("%s %d",ns,&K);
+  ns_l = strlen(ns);
+  if(ns_l==1 || ns_l==2 && ns[1] == '0') { puts("-1"); return 0; }
 
-int sdfamain() {
-  int n, k;
-  scanf("%d %d", &n, &k);
-  printf("%d", amain(n, k));
+  dup = false;
+  w[ns_l-1] = 1;
+  for(i=ns_l-2; i>=0; --i) w[i] = w[i+1]*10;
+  for(i=0; i<ns_l-1; ++i) {
+    for(j=i+1; j<ns_l; ++j) {
+      if(ns[i] == ns[j]) {
+        dup = true;
+        goto _exit_loop;
+      }
+    }
+  }
+_exit_loop:
+
+  printf("%d", go(0, K));
   return 0;
 }
